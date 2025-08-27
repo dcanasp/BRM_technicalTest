@@ -1,6 +1,6 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BeforeCreate, BeforeUpdate } from 'sequelize-typescript';
+import * as bcrypt from 'bcrypt';
 
-// Enums are a good way to manage roles
 export enum UserRole {
   ADMIN = 'Administrator',
   CLIENT = 'Client',
@@ -30,4 +30,17 @@ export class User extends Model<User> {
     allowNull: false,
   })
   role!: UserRole;
+
+  // async hashPassword(instance: User) {
+  //   // Añadir una comprobación para asegurar que la contraseña no sea nula o indefinida
+  //   if (instance.changed('password') && instance.password) {
+  //     const salt = await bcrypt.genSalt();
+  //     instance.password = await bcrypt.hash(instance.password, salt);
+  //   }
+  // }
+
+  // Método de instancia para validar la contraseña
+  static async validatePassword(password: string, user: User): Promise<boolean> {
+    return bcrypt.compare(password, user.password);
+  }
 }

@@ -18,7 +18,7 @@ export class ProductsService {
       entryDate: new Date(createProductDto.entryDate),
     };
 
-    return this.productModel.create(productPayload as any); // Use 'as any' to bypass the strict type check
+    return this.productModel.create(productPayload as Product);
   }
 
   // Get all products
