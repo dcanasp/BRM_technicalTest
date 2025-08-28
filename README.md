@@ -37,10 +37,17 @@ Antes de iniciar el servidor, asegúrate de tener las siguientes variables de en
 
 ### **2\. Ejecución de la Aplicación**
 
-Para iniciar el servidor NestJS en modo de desarrollo, ejecuta el siguiente comando:
+Para iniciar el servidor NestJS, se ejecutan los siguientes comandos:
 
+```
+npm i
 npm run start
-
+```
+alternativamente se pude desde docker con
+```
+docker build -t brm-app .
+docker run --network host -p 3000:3000 brm-app
+```
 ### **3\. Uso del API**
 
 Una vez que el servidor esté en funcionamiento, puedes interactuar con las siguientes rutas:
@@ -83,6 +90,7 @@ La integración con **Azure Application Insights** está configurada para recopi
 ## Pruebas fotograficas
 ### rutas
 ![routes](./images/routes.png)
+![Postman](./images/postman.png)
 ### metricas
 ![Metrics](./images/metrics.png)
 ### DB
