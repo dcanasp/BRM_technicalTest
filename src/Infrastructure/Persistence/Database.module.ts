@@ -3,6 +3,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from 'src/Domain/Entities/User.entity';
 import { Product } from 'src/Domain/Entities/Product.entity';
+import { Purchase } from 'src/Domain/Entities/Purchase.entity';
+import { PurchaseItem } from 'src/Domain/Entities/PurchaseItem.entity';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { Product } from 'src/Domain/Entities/Product.entity';
         database: configService.get<string>('DB_DATABASE') || 'your_db_name',
         autoLoadModels: true, // Automatically loads models if they are provided
         synchronize: true, // This will create the tables automatically based on your models (useful for development)
-        models: [User, Product],
+        models: [User, Product, Purchase, PurchaseItem], // Add your models here
       }),
       inject: [ConfigService],
     }),

@@ -1,4 +1,5 @@
-import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, PrimaryKey, HasMany } from 'sequelize-typescript';
+import { PurchaseItem } from './PurchaseItem.entity';
 
 @Table({
   tableName: 'products',
@@ -7,6 +8,7 @@ import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript
 export class Product extends Model<Product> {
   @Column({
     type: DataType.STRING,
+    primaryKey: true,
     allowNull: false,
     unique: true,
   })
@@ -19,17 +21,15 @@ export class Product extends Model<Product> {
   name!: string;
 
   @Column({
-    type: DataType.FLOAT,
+    type: DataType.DECIMAL(10, 2),
     allowNull: false,
-    validate: {
-      min: 0, // Price cannot be negative
-    },
   })
   price!: number;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
+    defaultValue: 0,
     validate: {
       min: 0, // Quantity cannot be negative
     },
@@ -39,6 +39,10 @@ export class Product extends Model<Product> {
   @Column({
     type: DataType.DATE,
     allowNull: false,
+    defaultValue: DataType.NOW,
   })
   entryDate!: Date;
+
+  @HasMany(() => PurchaseItem)
+  purchaseItems!: PurchaseItem[];
 }

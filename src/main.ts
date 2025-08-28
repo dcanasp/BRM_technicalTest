@@ -2,29 +2,45 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { useAzureMonitor } from '@azure/monitor-opentelemetry';
+import { AzureLoggerService } from './shared/logger.service';
+require('dotenv').config();
+useAzureMonitor();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    // Set the custom logger for the entire application
+    logger: new AzureLoggerService(),
+  });
+
+  // ... rest of your bootstrap code
   const config = new DocumentBuilder()
     .setTitle('Cats example')
     .setDescription('The cats API description')
     .setVersion('1.0')
     .addTag('cats')
     .addBearerAuth(
-          {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
-            name: 'Authorization',
-            description: 'Enter JWT token',
-            in: 'header'
-          },
-          'access-token' // This is a unique name for this security scheme
-        )
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Enter JWT token',
+        in: 'header'
+      },
+      'access-token' // This is a unique name for this security scheme
+    )
 
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
+  //const configService = app.get(ConfigService);
+  //var connectionString = configService.get<string>('APPLICATIONINSIGHTS_CONNECTION_STRING')
+  //if (connectionString) {
+    //useAzureMonitor({
+      //connectionString: connectionString,
+    //});
+  //}
 
 
   app.useGlobalPipes(new ValidationPipe({

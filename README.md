@@ -1,98 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# **Documento de Instrucciones del Software**
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## **Características Principales**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+* **Gestión de Usuarios y Roles:** El sistema permite el registro de usuarios con dos roles principales: **Cliente** (para realizar compras) y **Administrador** (para gestionar productos y ver reportes de ventas).
+* **Autenticación y Seguridad:** El acceso a las funcionalidades está protegido mediante autenticación con JSON Web Tokens (**JWT**). Las rutas están resguardadas con Guards que verifican tanto la autenticación como el rol del usuario para conceder acceso.
+* **Catálogo de Productos:** Los usuarios con rol de **Administrador** pueden gestionar los productos en el inventario, incluyendo la adición, actualización y eliminación de artículos.
+* **Módulo de Compras:** Los **clientes** pueden realizar compras, lo que automáticamente actualiza el inventario disponible. La lógica de negocio utiliza transacciones para asegurar que las compras solo se completen si hay suficiente stock para todos los productos.
+* **Historial de Compras:** Los **clientes** pueden consultar su historial de compras y ver los detalles de sus facturas.
+* **Reportes de Ventas:** Los **Administradores** tienen acceso a un reporte que muestra todas las compras realizadas en el sistema.
+* **Monitoreo y Telemetría:** El software está configurado para enviar datos de telemetría a **Azure Application Insights** a través de **OpenTelemetry**. Esto permite monitorear el rendimiento, identificar errores en las solicitudes y consultar logs detallados.
 
-## Description
+## **Stack Técnico**
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este software se ha construido utilizando las siguientes tecnologías:
 
-## Project setup
+* **Backend:** [Node.js](https://nodejs.org/) con el framework [NestJS](https://nestjs.com/) (el cual funciona por debajo con express.js).
+* **Base de datos:** [PostgreSQL](https://www.postgresql.org/).
+* **ORM (Mapeador de Objetos-Relacional):** [Sequelize](https://sequelize.org/) y [Sequelize TypeScript](https://sequelize.org/docs/v6/other-topics/typescript/).
+* **Autenticación:** [JWT (JSON Web Tokens)](https://jwt.io/).
+* **Monitoreo:** [OpenTelemetry](https://opentelemetry.io/) para la recolección de telemetría, enviada a [Azure Application Insights](https://azure.microsoft.com/en-us/services/monitor/) para su análisis.
 
-```bash
-$ npm install
-```
+## **Instrucciones de Configuración y Uso**
 
-## Compile and run the project
+### **1\. Configuración de Entorno**
 
-```bash
-# development
-$ npm run start
+Se tienen dos dependencias externas, una Base de datos PostgreSQL y una instancia de Azure APPLICATION INSIGHTS (servicio de la nube Azure).
+Antes de iniciar el servidor, asegúrate de tener las siguientes variables de entorno en un archivo .env en la raíz de tu proyecto:
 
-# watch mode
-$ npm run start:dev
+* `DB_HOST` Host de tu base de datos (ej. localhost).
+* `DB_PORT` Puerto de tu base de datos (ej. 5432).
+* `DB_USER` Nombre de usuario de la base de datos.
+* `DB_PASSWORD` Contraseña del usuario de la base de datos.
+* `DB_DATABASE` Nombre de la base de datos.
+* `JWT_SECRET` Una clave secreta para firmar los tokens JWT.
+* `APPLICATIONINSIGHTS_CONNECTION_STRING` Cadena de conexión de Azure Application Insights.
 
-# production mode
-$ npm run start:prod
-```
+### **2\. Ejecución de la Aplicación**
 
-## Run tests
+Para iniciar el servidor NestJS en modo de desarrollo, ejecuta el siguiente comando:
 
-```bash
-# unit tests
-$ npm run test
+npm run start
 
-# e2e tests
-$ npm run test:e2e
+### **3\. Uso del API**
 
-# test coverage
-$ npm run test:cov
-```
+Una vez que el servidor esté en funcionamiento, puedes interactuar con las siguientes rutas:
 
-## Deployment
+#### **Autenticación**
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+* POST /auth/register: Permite a los nuevos usuarios registrarse con un nombre de usuario y contraseña.
+* POST /auth/login: Permite a los usuarios autenticarse para recibir un token JWT.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### **Productos (Rol: Administrador)**
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+* POST /products: Crea un nuevo producto.
+* GET /products: Obtiene la lista de todos los productos.
+* GET /products/:id: Obtiene un producto por su ID.
+* PUT /products/:id: Actualiza un producto existente.
+* DELETE /products/:id: Elimina un producto.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### **Compras (Rol: Cliente y Administrador)**
 
-## Resources
+* POST /purchases: Permite a un **cliente** realizar una compra. El cuerpo de la solicitud debe ser un array de objetos con productLotNumber y quantity.
+* GET /purchases/history: Permite a un **cliente** ver su historial de compras.
+* GET /purchases/history/:purchaseId: Permite a un **cliente** ver los detalles de una factura específica.
+* GET /purchases: Permite a un **administrador** ver todas las compras.
 
-Check out a few resources that may come in handy when working with NestJS:
+### **4\. Monitoreo con Azure Application Insights**
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+La integración con **Azure Application Insights** está configurada para recopilar automáticamente telemetría sobre las solicitudes HTTP entrantes, las dependencias de la base de datos y los logs. Puedes ver los siguientes datos en el portal de Azure:
 
-## Support
+* **Rendimiento de las Solicitudes:** Identifica las rutas que tienen un rendimiento lento.
+* **Fallos en las Solicitudes:** Recibe notificaciones sobre las solicitudes que fallan.
+* **Métricas de la Base de Datos:** Observa el tiempo de respuesta de las consultas a la base de datos.
+* **Logs Personalizados:** Los mensajes de log generados por la aplicación pueden ser consultados para el diagnóstico.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### **Notas Adicionales**
 
-## Stay in touch
+* **Base de Datos**: La configuración synchronize: true de Sequelize es adecuada para desarrollo, ya que crea las tablas automáticamente. Para un entorno de producción, se recomienda usar migraciones para gestionar los cambios en el esquema de la base de datos.
+* **Validación de Datos**: La aplicación utiliza class-validator para asegurar que los datos de entrada a las rutas cumplan con las reglas de negocio, lo que previene errores y mejora la seguridad.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Pruebas fotograficas
+### rutas
+![routes](./images/routes.png)
+### metricas
+![Metrics](./images/metrics.png)
+### DB
+![DB](./images/db.png)
